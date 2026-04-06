@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WealthLens – Investment Visualiser</title>
+  <meta name="description" content="Visualise how any amount invested in Indian stocks, gold, real estate or indices grew over time.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body class="app-body">
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="logo">Wealth<span>Lens</span></a>
+      <div class="nav-links">
+        <a href="app.html" style="color:var(--ink);font-weight:500;">Visualiser</a>
+        <a href="index.html#how">How it works</a>
+        <a href="index.html#pricing">Pricing</a>
+      </div>
+      <div class="nav-cta">
+        <a href="index.html#pricing" class="btn-primary">Upgrade to Pro</a>
+      </div>
+      <button class="hamburger" onclick="toggleMenu()">&#9776;</button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="index.html">Home</a>
+      <a href="index.html#pricing">Pricing</a>
+    </div>
+  </nav>
+
+  <!-- AD BANNER (top - placeholder) -->
+  <div class="ad-banner ad-banner--top">
+    <span>Advertisement</span>
+    <!-- Replace with Google AdSense code -->
+    <div class="ad-placeholder">[ Google AdSense Banner – 728×90 ]</div>
+  </div>
+
+  <!-- APP LAYOUT -->
+  <div class="app-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <label class="ctrl-label">Investment Amount</label>
+        <div class="amount-row">
+          <span class="rupee">₹</span>
+          <input type="number" id="amountInput" value="10000" min="100" max="10000000" step="100">
+        </div>
+        <input type="range" id="amtSlider" min="100" max="1000000" step="100" value="10000" class="slider">
+        <div class="slider-hints"><span>₹100</span><span>₹10L</span></div>
+      </div>
+
+      <div class="sidebar-section">
+        <label class="ctrl-label">Start Year</label>
+        <div class="year-display" id="yearDisplay">2010</div>
+        <input type="range" id="yearSlider" min="2000" max="2020" step="1" value="2010" class="slider">
+        <div class="slider-hints"><span>2000</span><span>2020</span></div>
+      </div>
+
+      <div class="sidebar-section">
+        <label class="ctrl-label">Asset Category</label>
+        <div class="tab-group">
+          <button class="tab-btn active" onclick="setTab('stocks',this)">Stocks</button>
+          <button class="tab-btn" onclick="setTab('indices',this)">Indices</button>
+          <button class="tab-btn" onclick="setTab('commodities',this)">Commodities</button>
+          <button class="tab-btn" onclick="setTab('realestate',this)">Real Estate</button>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <label class="ctrl-label">Search &amp; Add Assets</label>
+        <div class="search-box">
+          <svg class="search-ico" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.4"/><path d="M10 10L13 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          <input type="text" id="searchInput" placeholder="Search by name or symbol…" autocomplete="off">
+        </div>
+        <div class="dropdown" id="dropdown"></div>
+      </div>
+
+      <div class="sidebar-section">
+        <label class="ctrl-label">Selected Assets <span id="assetCount" class="count-badge">0/8</span></label>
+        <div id="chipArea" class="chip-area">
+          <p class="chip-empty">Search and add assets above</p>
+        </div>
+      </div>
+
+      <!-- Ad sidebar placeholder -->
+      <div class="ad-sidebar">
+        <span class="ad-label">Ad</span>
+        <div class="ad-placeholder-sm">[ 300×250 Display Ad ]</div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="app-main">
+
+      <!-- METRICS -->
+      <div class="metrics-header">
+        <div id="metricsGrid" class="metrics-grid">
+          <div class="metric-empty">Add assets from the left panel to see results</div>
+        </div>
+      </div>
+
+      <!-- CHART -->
+      <div class="chart-section">
+        <div class="chart-header">
+          <h2 class="chart-title">Year-by-year growth</h2>
+          <div class="chart-legend" id="chartLegend"></div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="mainChart"></canvas>
+        </div>
+      </div>
+
+      <!-- TABLE -->
+      <div class="table-section" id="tableSection" style="display:none;">
+        <h3 class="table-title">Growth breakdown</h3>
+        <div class="table-scroll">
+          <table id="dataTable" class="data-table">
+            <thead><tr id="tableHead"></tr></thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- DISCLAIMER -->
+      <div class="disclaimer">
+        <strong>Disclaimer:</strong> All data shown uses estimated historical CAGR rates. This tool is for educational and illustrative purposes only. Past performance is not indicative of future results. This is not financial advice. Please consult a SEBI-registered advisor before making investment decisions.
+      </div>
+
+    </main>
+  </div>
+
+  <!-- AD BANNER (bottom) -->
+  <div class="ad-banner ad-banner--bottom">
+    <span>Advertisement</span>
+    <div class="ad-placeholder">[ Google AdSense Banner – 728×90 ]</div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
